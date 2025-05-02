@@ -1,50 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const Login = ({ setIsAuthenticated }) => {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    // Add your login logic here
-    console.log({ email, password });
+  const handleLogin = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user && user.email === email && user.password === password) {
+      localStorage.setItem("isAuthenticated", true);
+      setIsAuthenticated(true);
+      navigate("/home");
+    } else {
+      alert("Invalid email or password.");
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-900 to-teal-700 font-[Poppins]">
-      <div className="bg-black bg-opacity-70 p-8 rounded-xl shadow-2xl w-full max-w-md text-white">
-        <h2 className="text-3xl font-semibold text-center mb-8">Welcome Back</h2>
-        <form onSubmit={handleLogin}>
+    <div className="min-h-screen bg-[#0f0f0f] text-white flex items-center justify-center font-[Poppins]">
+      <div className="bg-gray-800 p-10 rounded-xl shadow-lg w-full max-w-md">
+        <h2 className="text-center text-3xl font-bold text-teal-400 mb-6">Login to CookSecure</h2>
+        <div>
           <input
-            type="text"
-            className="w-full p-4 mb-6 rounded-lg border border-teal-300 bg-white bg-opacity-10 text-white placeholder-white focus:outline-none focus:border-green-400"
-            placeholder="Email Address"
-            required
+            type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
+            className="w-full p-3 bg-gray-700 text-white mb-3 rounded-lg"
           />
           <input
             type="password"
-            className="w-full p-4 mb-6 rounded-lg border border-teal-300 bg-white bg-opacity-10 text-white placeholder-white focus:outline-none focus:border-green-400"
-            placeholder="Password"
-            required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            className="w-full p-3 bg-gray-700 text-white mb-3 rounded-lg"
           />
-          <button
-            type="submit"
-            className="w-full p-4 rounded-full bg-gradient-to-r from-teal-300 to-green-500 text-white font-semibold text-lg hover:scale-105 hover:shadow-lg transition duration-300"
-          >
-            Login
-          </button>
-        </form>
-        <div className="text-center mt-6">
-          <p>
-            Don't have an account?{' '}
-            <a href="/register" className="text-teal-300 font-semibold hover:underline">
-              Register here
-            </a>
-          </p>
+        </div>
+        <button onClick={handleLogin} className="w-full py-3 bg-gradient-to-r from-teal-500 to-teal-400 text-white font-semibold rounded-lg">
+          Login
+        </button>
+        <div className="text-center mt-6 text-sm text-gray-400">
+          Don't have an account? <span onClick={() => navigate("/register")} className="text-teal-400 hover:underline cursor-pointer">Register here</span>
         </div>
       </div>
     </div>

@@ -1,7 +1,8 @@
-// src/components/Register.jsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -10,9 +11,19 @@ const Register = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [userExistsError, setUserExistsError] = useState(false);
 
-  const handleChange = (e) =>
+  // Redirect to login if already registered
+  useEffect(() => {
+    const existingUser = localStorage.getItem("user");
+    if (existingUser) {
+      navigate("/login");
+    }
+  }, [navigate]);
+
+  const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
 
   const validateForm = () => {
     const newErrors = {};
@@ -40,86 +51,82 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (validateForm()) {
-      console.log("Registration successful:", formData);
-      // You can send formData to your backend here
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      
+      if (storedUser && storedUser.email === formData.email) {
+        setUserExistsError(true);
+        return;
+      }
+
+      // Save user data in localStorage
+      const { name, email, password } = formData;
+      localStorage.setItem("user", JSON.stringify({ name, email, password }));
+      navigate("/login");
     }
   };
 
   return (
     <div className="min-h-screen bg-[#0f0f0f] text-white flex items-center justify-center font-[Poppins]">
       <div className="bg-gray-800 p-10 rounded-xl shadow-lg w-full max-w-md">
-        <h2 className="text-center text-3xl font-bold text-teal-400 mb-6">
-          Register for CookSecure
-        </h2>
+        <h2 className="text-center text-3xl font-bold text-teal-400 mb-6">Register for CookSecure</h2>
+        {userExistsError && (
+          <div className="text-red-500 text-center mb-4">
+            A user with this email already exists. Please login.
+          </div>
+        )}
         <form onSubmit={handleSubmit}>
-          {/* Full Name */}
-          <div className="mb-5">
-            <label htmlFor="name" className="block mb-2 font-semibold text-gray-300">
-              Full Name
-            </label>
+          <div className="mb-4">
+            <label htmlFor="name" className="block text-sm">Full Name</label>
             <input
               type="text"
               id="name"
               value={formData.name}
               onChange={handleChange}
+              className="w-full p-3 bg-gray-700 text-white rounded-lg"
               placeholder="Enter your name"
-              className="w-full p-3 bg-gray-700 text-white border border-gray-600 rounded-lg focus:outline-none focus:border-teal-400"
             />
-            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+            {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
           </div>
-
-          {/* Email */}
-          <div className="mb-5">
-            <label htmlFor="email" className="block mb-2 font-semibold text-gray-300">
-              Email
-            </label>
+          <div className="mb-4">
+            <label htmlFor="email" className="block text-sm">Email</label>
             <input
               type="email"
               id="email"
               value={formData.email}
               onChange={handleChange}
+              className="w-full p-3 bg-gray-700 text-white rounded-lg"
               placeholder="Enter your email"
-              className="w-full p-3 bg-gray-700 text-white border border-gray-600 rounded-lg focus:outline-none focus:border-teal-400"
             />
-            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
           </div>
-
-          {/* Password */}
-          <div className="mb-5">
-            <label htmlFor="password" className="block mb-2 font-semibold text-gray-300">
-              Password
-            </label>
+          <div className="mb-4">
+            <label htmlFor="password" className="block text-sm">Password</label>
             <input
               type="password"
               id="password"
               value={formData.password}
               onChange={handleChange}
+              className="w-full p-3 bg-gray-700 text-white rounded-lg"
               placeholder="Enter your password"
-              className="w-full p-3 bg-gray-700 text-white border border-gray-600 rounded-lg focus:outline-none focus:border-teal-400"
             />
-            {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+            {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
           </div>
-
-          {/* Confirm Password */}
           <div className="mb-6">
-            <label htmlFor="confirmPassword" className="block mb-2 font-semibold text-gray-300">
-              Confirm Password
-            </label>
+            <label htmlFor="confirmPassword" className="block text-sm">Confirm Password</label>
             <input
               type="password"
               id="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
+              className="w-full p-3 bg-gray-700 text-white rounded-lg"
               placeholder="Confirm your password"
-              className="w-full p-3 bg-gray-700 text-white border border-gray-600 rounded-lg focus:outline-none focus:border-teal-400"
             />
             {errors.confirmPassword && (
-              <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
+              <p className="text-red-500 text-sm">{errors.confirmPassword}</p>
             )}
           </div>
-
-          {/* Submit Button */}
           <button
             type="submit"
             className="w-full py-3 bg-gradient-to-r from-teal-500 to-teal-400 text-white font-semibold rounded-lg transition-transform transform hover:scale-105 shadow-md"
@@ -128,12 +135,14 @@ const Register = () => {
           </button>
         </form>
 
-        {/* Footer */}
         <div className="text-center mt-6 text-sm text-gray-400">
           Already have an account?{" "}
-          <a href="#" className="text-teal-400 hover:underline">
+          <span
+            onClick={() => navigate("/login")}
+            className="text-teal-400 hover:underline cursor-pointer"
+          >
             Login here
-          </a>
+          </span>
         </div>
       </div>
     </div>

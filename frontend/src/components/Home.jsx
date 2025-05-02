@@ -1,48 +1,39 @@
 import React, { useState, useEffect } from "react";
 import RecipeCard from "./RecipeCard";
 import RecipeModal from "./RecipeModal";
-import { getRecipes } from "../recipeApi"; // Adjusted import
-import "./Home.css"
+import { getRecipes } from "../recipeApi";
+import "./Home.css";
 
 const Home = () => {
   const [recipes, setRecipes] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(""); // New state for search input
+  const [searchQuery, setSearchQuery] = useState("");
 
+  // Initial fetch with default search
   useEffect(() => {
-    // Fetch recipes on component mount with a default search term
-    const fetchRecipes = async () => {
-      const fetchedRecipes = await getRecipes("chicken"); // Default search term
+    const fetchInitialRecipes = async () => {
+      const fetchedRecipes = await getRecipes("chicken");
       setRecipes(fetchedRecipes);
     };
-    fetchRecipes();
+    fetchInitialRecipes();
   }, []);
 
+  // Fetch recipes based on search
   useEffect(() => {
-    // Fetch recipes when search query changes
-    if (searchQuery) {
-      const fetchSearchedRecipes = async () => {
-        const fetchedRecipes = await getRecipes(searchQuery); // Fetch based on search query
-        setRecipes(fetchedRecipes);
-      };
-      fetchSearchedRecipes();
-    } else {
-      // If searchQuery is empty, reset to the default state (or fetch all recipes)
-      const fetchRecipes = async () => {
-        const fetchedRecipes = await getRecipes("chicken"); // Default search term
-        setRecipes(fetchedRecipes);
-      };
-      fetchRecipes();
-    }
+    const fetchRecipesBySearch = async () => {
+      const query = searchQuery.trim() || "chicken";
+      const fetchedRecipes = await getRecipes(query);
+      setRecipes(fetchedRecipes);
+    };
+    fetchRecipesBySearch();
   }, [searchQuery]);
 
   const handleAddRecipe = (newRecipe) => {
-    setRecipes([...recipes, newRecipe]);
+    setRecipes((prev) => [...prev, newRecipe]);
   };
 
   const handleDeleteRecipe = (index) => {
-    const updatedRecipes = recipes.filter((_, i) => i !== index);
-    setRecipes(updatedRecipes);
+    setRecipes((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleShowInstructions = (index) => {
@@ -57,23 +48,12 @@ const Home = () => {
           <h1 className="text-3xl font-bold text-transparent bg-gradient-to-r from-teal-400 to-teal-600 bg-clip-text">
             🍳 CookSecure
           </h1>
+
           <nav>
             <ul className="flex gap-6">
-              <li>
-                <a href="#" className="text-gray-300 hover:text-teal-400">
-                  Home
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-300 hover:text-teal-400">
-                  Recipes
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-300 hover:text-teal-400">
-                  Login
-                </a>
-              </li>
+              <li><a href="#" className="text-gray-300 hover:text-teal-400">Home</a></li>
+              <li><a href="#" className="text-gray-300 hover:text-teal-400">Recipes</a></li>
+              <li><a href="#" className="text-gray-300 hover:text-teal-400">Login</a></li>
             </ul>
           </nav>
 
@@ -84,21 +64,21 @@ const Home = () => {
               className="px-4 py-2 rounded-full border border-teal-600 bg-gray-800 text-white placeholder-teal-400 focus:outline-none"
               placeholder="Search for recipes..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)} // Update searchQuery
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="Hbackground  bg-gradient-to-r from-blue-800 to-teal-700 py text-center ">
+      <section className="Hbackground bg-gradient-to-r from-blue-800 to-teal-700 text-center py-32">
         <h2 className="text-4xl font-bold mb-4">Discover & Share Delicious Recipes</h2>
         <p className="text-xl max-w-lg mx-auto mb-8 text-teal-100">
           CookSecure lets you explore and contribute your favorite meals, all in a secure and beautiful platform.
         </p>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-gradient-to-r from-teal-400 to-teal-600 px-6 py-3 mb-40 rounded-full text-white font-semibold transform transition-all hover:scale-105"
+          className="bg-gradient-to-r from-teal-400 to-teal-600 px-6 py-3 mb-8 rounded-full text-white font-semibold transform transition-all hover:scale-105"
         >
           Add Recipe
         </button>
@@ -118,7 +98,9 @@ const Home = () => {
               />
             ))
           ) : (
-            <p className="text-center text-white">No recipes found. Please try a different search term.</p>
+            <p className="text-center text-white col-span-full">
+              No recipes found. Please try a different search term.
+            </p>
           )}
         </div>
       </section>
