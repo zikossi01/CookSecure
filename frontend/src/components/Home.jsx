@@ -2,14 +2,16 @@ import React, { useState, useEffect } from "react";
 import RecipeCard from "./RecipeCard";
 import RecipeModal from "./RecipeModal";
 import { getRecipes } from "../recipeApi";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
+import { useNavigate } from "react-router-dom";
 import "./Home.css";
 
 const Home = ({ setIsAuthenticated }) => {
   const [recipes, setRecipes] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const navigate = useNavigate(); // Initialize navigate function for redirection
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
+  const navigate = useNavigate();
 
   // Initial fetch with default search
   useEffect(() => {
@@ -39,13 +41,13 @@ const Home = ({ setIsAuthenticated }) => {
   };
 
   const handleShowInstructions = (index) => {
-    alert(recipes[index].instructions);
+    setSelectedRecipe(recipes[index]);
+    setShowPopup(true);
   };
 
-  // Logout function to clear localStorage and redirect to login page
   const handleLogout = () => {
-    setIsAuthenticated(false); // Update the authentication state
-    navigate("/login"); // Redirect to login page
+    setIsAuthenticated(false);
+    navigate("/login");
   };
 
   return (
@@ -61,7 +63,6 @@ const Home = ({ setIsAuthenticated }) => {
             <ul className="flex gap-6">
               <li><a href="#" className="text-gray-300 hover:text-teal-400">Home</a></li>
               <li><a href="#" className="text-gray-300 hover:text-teal-400">Recipes</a></li>
-              {/* If authenticated, show Logout button */}
               <li>
                 <button
                   onClick={handleLogout}
@@ -73,7 +74,6 @@ const Home = ({ setIsAuthenticated }) => {
             </ul>
           </nav>
 
-          {/* Search Bar */}
           <div className="relative">
             <input
               type="text"
@@ -121,12 +121,38 @@ const Home = ({ setIsAuthenticated }) => {
         </div>
       </section>
 
-      {/* Modal */}
+      {/* Add Recipe Modal */}
       {isModalOpen && (
         <RecipeModal
           onClose={() => setIsModalOpen(false)}
           onAddRecipe={handleAddRecipe}
         />
+      )}
+
+      {/* Instructions Popup Modal */}
+      {showPopup && selectedRecipe && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white rounded-xl shadow-lg max-w-md w-full p-4 relative text-gray-900 overflow-hidden">
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-xl font-bold"
+              onClick={() => setShowPopup(false)}
+            >
+              &times;
+            </button>
+            <h2 className="text-2xl font-bold mb-4 text-center">{selectedRecipe.name}</h2>
+            {selectedRecipe.image && (
+              <img
+                src={selectedRecipe.image}
+                alt={selectedRecipe.name}
+                className="rounded-lg mb-4 w-full max-h-48 object-cover mx-auto"
+              />
+            )}
+            <div className="h-48 overflow-y-auto">
+              <h3 className="text-lg font-semibold mb-2">Instructions:</h3>
+              <p className="text-sm whitespace-pre-wrap">{selectedRecipe.instructions}</p>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Footer */}
