@@ -130,30 +130,32 @@ const Home = ({ setIsAuthenticated }) => {
       )}
 
       {/* Instructions Popup Modal */}
-      {showPopup && selectedRecipe && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white rounded-xl shadow-lg max-w-md w-full p-4 relative text-gray-900 overflow-hidden">
-            <button
-              className="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-xl font-bold"
-              onClick={() => setShowPopup(false)}
-            >
-              &times;
-            </button>
-            <h2 className="text-2xl font-bold mb-4 text-center">{selectedRecipe.name}</h2>
-            {selectedRecipe.image && (
-              <img
-                src={selectedRecipe.image}
-                alt={selectedRecipe.name}
-                className="rounded-lg mb-4 w-full max-h-48 object-cover mx-auto"
-              />
-            )}
-            <div className="h-48 overflow-y-auto">
-              <h3 className="text-lg font-semibold mb-2">Instructions:</h3>
-              <p className="text-sm whitespace-pre-wrap">{selectedRecipe.instructions}</p>
-            </div>
-          </div>
-        </div>
+{showPopup && selectedRecipe && (
+  <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50 transition-all duration-300 ease-in-out">
+    <div className="bg-white bg-opacity-90 rounded-2xl shadow-xl transform scale-95 hover:scale-100 transition-transform duration-500 ease-out w-11/12 sm:w-2/3 md:w-1/2 lg:w-1/3 p-6 relative overflow-hidden backdrop-blur-md">
+      <button
+        className="absolute top-4 right-4 text-gray-500 hover:text-red-600 text-3xl font-bold transition-colors duration-200"
+        onClick={() => setShowPopup(false)}
+      >
+        &times;
+      </button>
+      <h2 className="text-2xl font-bold mb-4 text-center text-teal-600">{selectedRecipe.name}</h2>
+      {selectedRecipe.image && (
+        <img
+          src={selectedRecipe.image}
+          alt={selectedRecipe.name}
+          className="rounded-lg mb-4 w-full h-48 object-cover mx-auto shadow-xl transition-transform duration-300 transform hover:scale-105"
+        />
       )}
+      <div className="h-56 overflow-y-auto scrollbar-thin scrollbar-thumb-teal-500 scrollbar-track-gray-300 transition-all duration-300 ease-in-out">
+        <h3 className="text-lg font-semibold mb-2 text-teal-500">Instructions:</h3>
+        <p className="text-sm whitespace-pre-wrap text-gray-700">{selectedRecipe.instructions}</p>
+      </div>
+    </div>
+  </div>
+)}
+
+
 
       {/* Footer */}
       <footer className="bg-gray-900 text-gray-400 text-center py-8">
