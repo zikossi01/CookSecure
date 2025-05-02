@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import RecipeCard from "./RecipeCard";
 import RecipeModal from "./RecipeModal";
 import { getRecipes } from "../recipeApi"; // Adjusted import
+import "./Home.css"
 
 const Home = () => {
   const [recipes, setRecipes] = useState([]);
@@ -90,14 +91,14 @@ const Home = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-800 to-teal-700 py-32 text-center pt-36">
+      <section className="Hbackground  bg-gradient-to-r from-blue-800 to-teal-700 py text-center ">
         <h2 className="text-4xl font-bold mb-4">Discover & Share Delicious Recipes</h2>
         <p className="text-xl max-w-lg mx-auto mb-8 text-teal-100">
           CookSecure lets you explore and contribute your favorite meals, all in a secure and beautiful platform.
         </p>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-gradient-to-r from-teal-400 to-teal-600 px-6 py-3 rounded-full text-white font-semibold transform transition-all hover:scale-105"
+          className="bg-gradient-to-r from-teal-400 to-teal-600 px-6 py-3 mb-40 rounded-full text-white font-semibold transform transition-all hover:scale-105"
         >
           Add Recipe
         </button>
