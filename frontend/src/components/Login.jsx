@@ -9,7 +9,7 @@ const Login = ({ setIsAuthenticated }) => {
   const handleLogin = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user && user.email === email && user.password === password) {
-      localStorage.setItem("isAuthenticated", true);
+      localStorage.setItem("isAuthenticated", "true");  // Set the auth token in localStorage
       setIsAuthenticated(true);
       navigate("/home");
     } else {

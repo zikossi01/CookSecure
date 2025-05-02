@@ -12,8 +12,15 @@ const App = () => {
     const authToken = localStorage.getItem("isAuthenticated");
     const existingUser = localStorage.getItem("user");
 
-    if (authToken) setIsAuthenticated(true);
-    if (existingUser) setUserExists(true);
+    // If 'isAuthenticated' is true, we set the state to true
+    if (authToken === "true") {
+      setIsAuthenticated(true);
+    }
+
+    // If a user is stored in localStorage, we check for their existence
+    if (existingUser) {
+      setUserExists(true);
+    }
   }, []);
 
   return (
@@ -34,7 +41,6 @@ const App = () => {
               )
             }
           />
-
           <Route path="/register" element={<Register />} />
           <Route
             path="/login"
@@ -48,7 +54,13 @@ const App = () => {
           />
           <Route
             path="/home"
-            element={isAuthenticated ? <Home /> : <Navigate to="/login" />}
+            element={
+              isAuthenticated ? (
+                <Home setIsAuthenticated={setIsAuthenticated} />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
           />
         </Routes>
       </div>

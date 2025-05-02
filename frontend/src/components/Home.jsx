@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import RecipeCard from "./RecipeCard";
 import RecipeModal from "./RecipeModal";
 import { getRecipes } from "../recipeApi";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
 import "./Home.css";
 
-const Home = () => {
+const Home = ({ setIsAuthenticated }) => {
   const [recipes, setRecipes] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate(); // Initialize navigate function for redirection
 
   // Initial fetch with default search
   useEffect(() => {
@@ -40,9 +42,15 @@ const Home = () => {
     alert(recipes[index].instructions);
   };
 
+  // Logout function to clear localStorage and redirect to login page
+  const handleLogout = () => {
+    setIsAuthenticated(false); // Update the authentication state
+    navigate("/login"); // Redirect to login page
+  };
+
   return (
     <div className="bg-gray-900 text-white min-h-screen">
-      {/* Header */}
+      {/* Header with Navbar */}
       <header className="fixed w-full bg-opacity-85 backdrop-blur-sm shadow-lg z-50 py-4">
         <div className="max-w-screen-xl mx-auto flex justify-between items-center px-6">
           <h1 className="text-3xl font-bold text-transparent bg-gradient-to-r from-teal-400 to-teal-600 bg-clip-text">
@@ -53,7 +61,15 @@ const Home = () => {
             <ul className="flex gap-6">
               <li><a href="#" className="text-gray-300 hover:text-teal-400">Home</a></li>
               <li><a href="#" className="text-gray-300 hover:text-teal-400">Recipes</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-teal-400">Login</a></li>
+              {/* If authenticated, show Logout button */}
+              <li>
+                <button
+                  onClick={handleLogout}
+                  className="text-gray-300 hover:text-teal-400"
+                >
+                  Logout
+                </button>
+              </li>
             </ul>
           </nav>
 
