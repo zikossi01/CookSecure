@@ -3,6 +3,7 @@ import RecipeCard from "./RecipeCard";
 import RecipeModal from "./RecipeModal";
 import { getRecipes } from "../recipeApi";
 import { useNavigate } from "react-router-dom";
+import BG from "../assets/BG_food.mp4"
 import "./Home.css";
 
 const Home = ({ setIsAuthenticated }) => {
@@ -104,18 +105,35 @@ const Home = ({ setIsAuthenticated }) => {
       </header>
 
       {/* Hero */}
-      <section className="Hbackground bg-gradient-to-r from-blue-800 to-teal-700 text-center py-32">
-        <h2 className="text-4xl font-bold mb-4">Discover & Share Delicious Recipes</h2>
-        <p className="text-xl max-w-lg mx-auto mb-8 text-teal-100">
-          CookSecure lets you explore and contribute your favorite meals, all in a secure and beautiful platform.
-        </p>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="bg-gradient-to-r from-teal-400 to-teal-600 px-6 py-3 mb-8 rounded-full text-white font-semibold transform transition-all hover:scale-105"
-        >
-          Add Recipe
-        </button>
-      </section>
+      <section className="relative h-screen overflow-hidden flex items-center justify-center text-center">
+  {/* Background Video */}
+  <video
+    src={BG}
+    autoPlay
+    loop
+    muted
+    playsInline
+    className="absolute top-0 left-0 w-full h-full object-cover z-0 mt-10 "
+  />
+
+  {/* Optional dark overlay for better contrast */}
+  <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-40 z-10" />
+
+  {/* Foreground Content */}
+  <div className="relative z-20 text-white px-4">
+    <h2 className="text-4xl font-bold mb-4">Discover & Share Delicious Recipes</h2>
+    <p className="text-xl max-w-lg mx-auto mb-8 text-teal-100">
+      CookSecure lets you explore and contribute your favorite meals, all in a secure and beautiful platform.
+    </p>
+    <button
+      onClick={() => setIsModalOpen(true)}
+      className="bg-gradient-to-r from-teal-400 to-teal-600 px-6 py-3 rounded-full text-white font-semibold transform transition-all hover:scale-105"
+    >
+      Add Recipe
+    </button>
+  </div>
+</section>
+
 
       {/* Recipes Section */}
       <section className="py-16 bg-gray-800">

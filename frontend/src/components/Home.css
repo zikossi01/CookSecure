@@ -1,5 +1,4 @@
 .Hbackground {
-    background-image: url('../assets/BG.png');
     background-size: cover;          
     background-repeat: no-repeat;    /* Avoid repeating the image */
     background-position: center;     /* Center the image */
