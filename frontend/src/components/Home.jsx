@@ -13,7 +13,7 @@ const Home = ({ setIsAuthenticated }) => {
   const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
 
-  // Initial fetch with default search
+  // Fetch recipes on mount
   useEffect(() => {
     const fetchInitialRecipes = async () => {
       const fetchedRecipes = await getRecipes("chicken");
@@ -46,13 +46,14 @@ const Home = ({ setIsAuthenticated }) => {
   };
 
   const handleLogout = () => {
+    localStorage.removeItem("isAuthenticated");
     setIsAuthenticated(false);
     navigate("/login");
   };
 
   return (
     <div className="bg-gray-900 text-white min-h-screen">
-      {/* Header with Navbar */}
+      {/* Header */}
       <header className="fixed w-full bg-opacity-85 backdrop-blur-sm shadow-lg z-50 py-4">
         <div className="max-w-screen-xl mx-auto flex justify-between items-center px-6">
           <h1 className="text-3xl font-bold text-transparent bg-gradient-to-r from-teal-400 to-teal-600 bg-clip-text">
@@ -86,7 +87,7 @@ const Home = ({ setIsAuthenticated }) => {
         </div>
       </header>
 
-      {/* Hero Section */}
+      {/* Hero */}
       <section className="Hbackground bg-gradient-to-r from-blue-800 to-teal-700 text-center py-32">
         <h2 className="text-4xl font-bold mb-4">Discover & Share Delicious Recipes</h2>
         <p className="text-xl max-w-lg mx-auto mb-8 text-teal-100">
@@ -100,7 +101,7 @@ const Home = ({ setIsAuthenticated }) => {
         </button>
       </section>
 
-      {/* Recipe Cards */}
+      {/* Recipes Section */}
       <section className="py-16 bg-gray-800">
         <h3 className="text-3xl text-center text-white mb-8">Popular Recipes</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-screen-xl mx-auto">
@@ -129,33 +130,31 @@ const Home = ({ setIsAuthenticated }) => {
         />
       )}
 
-      {/* Instructions Popup Modal */}
-{showPopup && selectedRecipe && (
-  <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50 transition-all duration-300 ease-in-out">
-    <div className="bg-white bg-opacity-90 rounded-2xl shadow-xl transform scale-95 hover:scale-100 transition-transform duration-500 ease-out w-11/12 sm:w-2/3 md:w-1/2 lg:w-1/3 p-6 relative overflow-hidden backdrop-blur-md">
-      <button
-        className="absolute top-4 right-4 text-gray-500 hover:text-red-600 text-3xl font-bold transition-colors duration-200"
-        onClick={() => setShowPopup(false)}
-      >
-        &times;
-      </button>
-      <h2 className="text-2xl font-bold mb-4 text-center text-teal-600">{selectedRecipe.name}</h2>
-      {selectedRecipe.image && (
-        <img
-          src={selectedRecipe.image}
-          alt={selectedRecipe.name}
-          className="rounded-lg mb-4 w-full h-48 object-cover mx-auto shadow-xl transition-transform duration-300 transform hover:scale-105"
-        />
+      {/* Instructions Modal */}
+      {showPopup && selectedRecipe && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50 transition-all duration-300 ease-in-out">
+          <div className="bg-white bg-opacity-90 rounded-2xl shadow-xl transform scale-95 hover:scale-100 transition-transform duration-500 ease-out w-11/12 sm:w-2/3 md:w-1/2 lg:w-1/3 p-6 relative overflow-hidden backdrop-blur-md">
+            <button
+              className="absolute top-4 right-4 text-gray-500 hover:text-red-600 text-3xl font-bold transition-colors duration-200"
+              onClick={() => setShowPopup(false)}
+            >
+              &times;
+            </button>
+            <h2 className="text-2xl font-bold mb-4 text-center text-teal-600">{selectedRecipe.name}</h2>
+            {selectedRecipe.image && (
+              <img
+                src={selectedRecipe.image}
+                alt={selectedRecipe.name}
+                className="rounded-lg mb-4 w-full h-48 object-cover mx-auto shadow-xl transition-transform duration-300 transform hover:scale-105"
+              />
+            )}
+            <div className="h-56 overflow-y-auto scrollbar-thin scrollbar-thumb-teal-500 scrollbar-track-gray-300 transition-all duration-300 ease-in-out">
+              <h3 className="text-lg font-semibold mb-2 text-teal-500">Instructions:</h3>
+              <p className="text-sm whitespace-pre-wrap text-gray-700">{selectedRecipe.instructions}</p>
+            </div>
+          </div>
+        </div>
       )}
-      <div className="h-56 overflow-y-auto scrollbar-thin scrollbar-thumb-teal-500 scrollbar-track-gray-300 transition-all duration-300 ease-in-out">
-        <h3 className="text-lg font-semibold mb-2 text-teal-500">Instructions:</h3>
-        <p className="text-sm whitespace-pre-wrap text-gray-700">{selectedRecipe.instructions}</p>
-      </div>
-    </div>
-  </div>
-)}
-
-
 
       {/* Footer */}
       <footer className="bg-gray-900 text-gray-400 text-center py-8">
