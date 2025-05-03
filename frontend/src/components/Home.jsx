@@ -13,31 +13,47 @@ const Home = ({ setIsAuthenticated }) => {
   const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
 
-  // Fetch recipes on mount
+  // 🟩 Load recipes from localStorage first, then fetch from API
   useEffect(() => {
-    const fetchInitialRecipes = async () => {
-      const fetchedRecipes = await getRecipes("chicken");
-      setRecipes(fetchedRecipes);
-    };
-    fetchInitialRecipes();
+    const localRecipes = JSON.parse(localStorage.getItem("recipes")) || [];
+    if (localRecipes.length > 0) {
+      setRecipes(localRecipes);
+    } else {
+      fetchInitialRecipes(); // only call API if no local recipes exist
+    }
   }, []);
 
-  // Fetch recipes based on search
+  const fetchInitialRecipes = async () => {
+    const fetchedRecipes = await getRecipes("chicken");
+    setRecipes(fetchedRecipes);
+  };
+
+  // 🔍 Fetch API recipes if user searches something
   useEffect(() => {
     const fetchRecipesBySearch = async () => {
-      const query = searchQuery.trim() || "chicken";
+      const query = searchQuery.trim();
+      if (!query) return;
       const fetchedRecipes = await getRecipes(query);
       setRecipes(fetchedRecipes);
     };
-    fetchRecipesBySearch();
+
+    if (searchQuery) {
+      fetchRecipesBySearch();
+    }
   }, [searchQuery]);
 
+  // ➕ Add a new recipe to the list and localStorage
   const handleAddRecipe = (newRecipe) => {
-    setRecipes((prev) => [...prev, newRecipe]);
+    const updatedRecipes = [...recipes, newRecipe];
+    setRecipes(updatedRecipes);
+    localStorage.setItem("recipes", JSON.stringify(updatedRecipes));
   };
 
+  // ❌ Delete a recipe and update localStorage
   const handleDeleteRecipe = (index) => {
-    setRecipes((prev) => prev.filter((_, i) => i !== index));
+    const updatedRecipes = recipes.filter((_, i) => i !== index);
+    setRecipes(updatedRecipes);
+    localStorage.setItem("recipes", JSON.stringify(updatedRecipes));
   };
 
   const handleShowInstructions = (index) => {
